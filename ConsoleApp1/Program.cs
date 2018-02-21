@@ -16,7 +16,7 @@ namespace ConsoleApp1
             char userInput;
             do
             {
-                Console.WriteLine("Options: \nAdd - A \nDelete - D \nDisplay List - L \nOpen - O \nSave - S \nExit - E");
+                Console.WriteLine("\nOptions: \nAdd - A \nDelete - D \nDisplay List - L \nOpen - O \nSave - S \nExit - E");
                 userInput = char.ToUpper(Console.ReadKey().KeyChar);
 
                 if (userInput == 'A')
@@ -36,12 +36,16 @@ namespace ConsoleApp1
 
                 if (userInput == 'O')
                 {
-
+                    Console.Write("\nEnter a file name to open a list: ");
+                    string fileName = Console.ReadLine();
+                    opt.LoadFromFile(fileName);
                 }
 
                 if (userInput == 'S')
                 {
-
+                    Console.Write("\nEnter a file name to save a list: ");
+                    string fileName = Console.ReadLine();
+                    opt.SaveToFile(fileName);
                 }
 
             } while (userInput != 'E');
@@ -113,16 +117,22 @@ namespace ConsoleApp1
             var csv = "";
             for (int i = 0; i < toDo.Count; i++)
             {
-                csv += $"{toDo[i]},";
+                csv += toDo[i];
                 if (i < toDo.Count - 1) csv += "\n";
             }
-
+            fileName += ".txt";
             File.WriteAllText(fileName, csv);
         }
         public void LoadFromFile(string fileName)
         {
+            toDo.Clear();
+            string content = File.ReadAllText((fileName += ".txt"));
+            string[] recs = content.Split('\n');
 
-
+            for (int i = 0; i < recs.Count(); i++)
+            {
+                toDo.Add(recs[i]);
+            }
         }
 
         public bool IsEmpty()
