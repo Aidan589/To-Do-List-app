@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ConsoleApp1
 {
@@ -18,12 +19,12 @@ namespace ConsoleApp1
                 Console.WriteLine("Options: \nAdd - A \nDelete - D \nDisplay List - L \nOpen - O \nSave - S \nExit - E");
                 userInput = char.ToUpper(Console.ReadKey().KeyChar);
 
-                if(userInput == 'A')
+                if (userInput == 'A')
                 {
                     opt.AddToList();
                 }
 
-                if(userInput == 'D')
+                if (userInput == 'D')
                 {
                     opt.DeleteFromList();
                 }
@@ -33,17 +34,17 @@ namespace ConsoleApp1
                     opt.DisplayList();
                 }
 
-                if(userInput == 'O')
+                if (userInput == 'O')
                 {
 
                 }
 
-                if(userInput == 'S')
+                if (userInput == 'S')
                 {
 
                 }
 
-            } while(userInput != 'E');
+            } while (userInput != 'E');
         }
     }
 
@@ -57,50 +58,77 @@ namespace ConsoleApp1
             toDo.Add(Console.ReadLine());
             Console.WriteLine("\nSuccessfully added");
         }
+
         public void DeleteFromList()
         {
-            DisplayList();
-            Console.WriteLine("\nEnter the number of the one you want to delete: ");
-            bool pass = false;
-
-            while(pass == false)
+            if (IsEmpty() == false)
             {
-                string userInput = Console.ReadLine();
-                int inputNumber;
-                if (!int.TryParse(userInput, out inputNumber))
+                DisplayList();
+            }
+            else
+            {
+                DisplayList();
+                Console.WriteLine("\nEnter the number of the one you want to delete: ");
+                bool pass = false;
+
+                while (pass == false)
                 {
-                    Console.WriteLine("{0} is not an integer", userInput);
-                }
-                else if(inputNumber > toDo.Count())
-                {
-                    Console.WriteLine("Number is out of range");
-                }
-                else
-                {
-                    pass = true;
+                    string userInput = Console.ReadLine();
+                    int inputNumber;
+                    if (!int.TryParse(userInput, out inputNumber))
+                    {
+                        Console.WriteLine("{0} is not an integer", userInput);
+                    }
+                    else if (inputNumber > toDo.Count)
+                    {
+                        Console.WriteLine("Number is out of range");
+                    }
+                    else
+                    {
+                        pass = true;
+                        toDo.RemoveAt((inputNumber-1));
+                        Console.WriteLine("\nSuccessfully deleted");
+                    }
                 }
             }
-
-            //toDo.Remove(Console.ReadLine().toint());
-            Console.WriteLine("\nSuccessfully deleted");
         }
         public void DisplayList()
         {
-            if (IsEmpty() == false) {  }
+            if (IsEmpty() == false)
+            {
+                Console.WriteLine("The current list is empty. Try adding a to-do or load a to-do");
+            }
             else
             {
-                for (int i = 0; i < toDo.Count(); i++)
+                for (int i = 0; i < toDo.Count; i++)
                 {
                     string number = (i + 1).ToString();
                     Console.WriteLine($"\n{number}. {toDo[i]}");
                 }
             }
         }
+
+        public void SaveToFile(string fileName)
+        {
+            var csv = "";
+            for (int i = 0; i < toDo.Count; i++)
+            {
+                csv += $"{toDo[i]},";
+                if (i < toDo.Count - 1) csv += "\n";
+            }
+
+            File.WriteAllText(fileName, csv);
+        }
+        public void LoadFromFile(string fileName)
+        {
+
+
+        }
+
         public bool IsEmpty()
         {
             if (!toDo.Any())
             {
-                Console.WriteLine("The current list is empty. Try adding a to-do or load a to-do");
                 return false;
             }
             else
@@ -108,7 +136,5 @@ namespace ConsoleApp1
                 return true;
             }
         }
-
-
     }
 }
